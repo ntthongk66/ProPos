@@ -25,6 +25,7 @@ def plot_num_of_train_test_each_cluster(CLuster_list: list, dict_clust_trains: d
 # Create a stacked bar chart
     trains = [value for value in dict_clust_trains.values()]
     tests = [value for value in dict_clust_tests.values()]
+    CLuster_list = list(dict_clust_trains.keys())
     plt.figure(figsize=(width, height))
     plt.bar(CLuster_list, trains, label='Train')
     plt.bar(CLuster_list, tests, bottom=trains, label='Public test')
@@ -43,6 +44,7 @@ def plot_percentage_of_test(CLuster_list: list, dict_tests_percentage: dict, nam
     
     tests_percentage = [value for value in dict_tests_percentage.values()]
     
+    CLuster_list = list(dict_tests_percentage.keys())
     plt.figure(figsize=(width, height))
     plt.bar(CLuster_list, tests_percentage, label='Percentage (%)')
     # plt.bar(CLuster_list, tests, bottom=trains, label='Public test')

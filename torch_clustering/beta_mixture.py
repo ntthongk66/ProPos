@@ -15,7 +15,7 @@ import torch.nn as nn
 
 
 class BetaMixture1D(object):
-    def __init__(self,
+    def __init__(self,``
                  max_iters=10,
                  alphas_init=[1, 2],
                  betas_init=[2, 1],

@@ -3,14 +3,14 @@ from DATA.draw_chart import *
 #*==================CONFIG====================
 
 txt_new_gt = 'DATA/new_gt.txt'
-config_predict_train_valid = 'vgg_seq2seq_ema_train'
+config_predict_train_valid = 'resnet_seq2seq_ema_train'
 txt_predict_train_valid = f'/home/ntthong/NTT/OCR/ProPos/Predict/Predict_train/After_private/{config_predict_train_valid}.txt'
 txt_predict_33k_test = ''
 
 # json_cluster_folder = ''
 
-ckpt = 19
-Num_of_cluster = 120 # 20, 50, 70, 100, 120, 150, 170, 200
+ckpt = 64  # 19, 29, 49, 50, 56, 64
+Num_of_cluster = 150 # 20, 50, 70, 100, 120, 150, 170, 200
 Model_name = f'byol_{ckpt}'
 
 # Chart
@@ -66,7 +66,7 @@ dict_num_of_error_clust, dict_error_clust_folder = dict_train_valid_error(dict_g
 dict_percentage_error_clust = {}
 
 for clust in Cluster_list:
-    dict_percentage_error_clust[clust] = round(dict_num_of_error_clust[clust] / dict_cluster_trains[clust], 2)
+    dict_percentage_error_clust[clust] = round((dict_num_of_error_clust[clust] / dict_cluster_trains[clust]) * 100.0, 2)
     
 
 plot_num_of_error_each_cluster(dict_num_of_error_clust=dict_num_of_error_clust, width=width, height=height, dpi=dpi, save_figure_path=path_visual_save)
@@ -76,9 +76,16 @@ plot_num_of_train_test_each_cluster(Cluster_list, dict_cluster_trains, dict_clus
 
 plot_percentage_of_test(Cluster_list, dict_percentages_of_test_in_cluster, 'Test', width, height, dpi, path_visual_save, Model_name, Num_of_cluster)
 
-plot_percentage_of_test(Cluster_list, dict_percentage_error_clust, 'Error', width, height, dpi, path_visual_save, Model_name, Num_of_cluster)
+sorted_dict_percentage_error_clust = dict(sorted(dict_percentage_error_clust.items(), key=lambda item: item[1], reverse=True))
+
+plot_percentage_of_test(Cluster_list, sorted_dict_percentage_error_clust, 'Error', width, height, dpi, path_visual_save, Model_name, Num_of_cluster)
 
 
 src_folder = '/home/ntthong/NTT/OCR/ProPos/DATA/ocr_dataset/new_train/'
 
-copy_image_to_folder(src_folder, path_visual_save, [109], ckpt, Num_of_cluster, clust_folder, dict_error_clust_folder, dict_gt, dict_pred_train_valid)
+
+Top_n = 20
+# sorted_dict_percentage_error_clust = dict(sorted(dict_percentage_error_clust.items(), key=lambda item: item[1], reverse=True))
+
+
+copy_image_to_folder(src_folder, path_visual_save, list(sorted_dict_percentage_error_clust.keys())[:Top_n], ckpt, Num_of_cluster, clust_folder, dict_error_clust_folder, dict_gt, dict_pred_train_valid, dict_percentage_error_clust)
